@@ -31,6 +31,15 @@ export const createChat = asyncHandler(async (req, res) => {
       throw new ErrorResponse('Unsupported provider', 400);
   }
 
+  if (mode === 'development') {
+    if (!request.model) {
+      throw new ErrorResponse('400 you must provide a model parameter', 400);
+    }
+    if (!request.messages) {
+      throw new ErrorResponse("400 Missing required parameter: 'messages'", 400);
+    }
+  }
+
   const completion = await openai.chat.completions.create({
     stream,
     ...request
