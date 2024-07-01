@@ -73,10 +73,40 @@ class ChatMock {
   };
 }
 
+class ImageMock {
+  async generate({ ...request }) {
+    const { size, response_format, prompt, ...rest } = request;
+    let width = 1024;
+    let height = 1024;
+    if (size) {
+      const [w, h] = size.split('x');
+      width = parseInt(w);
+      height = parseInt(h);
+    }
+    const data = [
+      {
+        revised_prompt: prompt
+      }
+    ];
+    const url = `https://placedog.net/${width}/${height}?r`;
+    if (response_format === 'b64_json') {
+      const res = await fetch(`https://placedog.net/${width}/${height}?r`);
+      const arrayBuffer = await res.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const base64 = buffer.toString('base64');
+      data[0].b64_json = base64;
+      return { data };
+    }
+    data[0].url = url;
+    return { data };
+  }
+}
+
 class OpenAIMock {
   constructor() {}
 
   chat = new ChatMock();
+  images = new ImageMock();
 }
 
 export default OpenAIMock;
