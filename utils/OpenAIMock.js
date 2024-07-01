@@ -1,3 +1,5 @@
+import ErrorResponse from './ErrorResponse.js';
+
 class StreamMock {
   constructor(words) {
     this.words = words;
@@ -39,6 +41,9 @@ class StreamMock {
 class ChatMock {
   completions = {
     create({ messages, model, stream }) {
+      if (!model) throw new ErrorResponse('400 you must provide a model parameter', 400);
+      if (!messages) throw new ErrorResponse("400 Missing required parameter: 'messages'", 400);
+
       const text =
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
       if (stream) {
