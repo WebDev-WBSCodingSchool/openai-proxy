@@ -1,4 +1,10 @@
+import { readFile } from 'fs/promises';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+import { PassThrough } from 'stream';
 import ErrorResponse from './ErrorResponse.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 class StreamMock {
   constructor(words) {
@@ -102,11 +108,25 @@ class ImageMock {
   }
 }
 
+class AudioMock {
+  speech = {
+    async create() {
+      const filePath = join(__dirname, '../rr.mp3');
+      const rr = await readFile(filePath);
+      const passThrough = new PassThrough();
+      passThrough.write(rr);
+      passThrough.end();
+      return { body: passThrough };
+    }
+  };
+}
+
 class OpenAIMock {
   constructor() {}
 
   chat = new ChatMock();
   images = new ImageMock();
+  audio = new AudioMock();
 }
 
 export default OpenAIMock;
