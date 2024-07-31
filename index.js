@@ -14,7 +14,7 @@ app.use(cors({ origin: '*' }), express.json(), validateProvider, validateMode);
 app.use('/api/v1/audio/speech', audioRouter);
 app.use('/api/v1/chat/completions', chatRouter);
 app.use('/api/v1/images/generations', imageRouter);
-app.use('*', (req, res) => res.sendStatus(404));
+app.use('*', (req, res) => res.status(404).json({ error: 'Route not found' }));
 app.use(errorHandler);
 
 app.listen(port, () => {
