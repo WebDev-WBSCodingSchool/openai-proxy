@@ -5,7 +5,7 @@ import asyncHandler from '../utils/asyncHandler.js';
 export const createChat = asyncHandler(async (req, res) => {
   const {
     body: { stream, ...request },
-    headers: { mode }
+    headers: { mode },
   } = req;
 
   let openai;
@@ -16,14 +16,14 @@ export const createChat = asyncHandler(async (req, res) => {
 
   const completion = await openai.chat.completions.create({
     stream,
-    ...request
+    ...request,
   });
 
   if (stream) {
     res.writeHead(200, {
       Connection: 'keep-alive',
       'Cache-Control': 'no-cache',
-      'Content-Type': 'text/event-stream'
+      'Content-Type': 'text/event-stream',
     });
     for await (const chunk of completion) {
       res.write(`data: ${JSON.stringify(chunk)}\n\n`);

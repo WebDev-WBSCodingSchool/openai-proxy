@@ -8,8 +8,8 @@ import validateProvider from './middlewares/validateProvider.js';
 import validateMode from './middlewares/validateMode.js';
 
 const app = express();
-const port = process.env.PORT || 5050;
-
+const port = process.env.PORT;
+console.log(port);
 app.use(cors({ origin: '*' }), express.json(), validateProvider, validateMode);
 app.use('/api/v1/audio/speech', audioRouter);
 app.use('/api/v1/chat/completions', chatRouter);
